@@ -8,5 +8,6 @@ model GearCategories {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
+    @@unique([gearId, categoryId])
     @@map("gear_categories")
 }

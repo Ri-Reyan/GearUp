@@ -6,7 +6,7 @@ model User {
     role UserRole @default(user)
 
     inventory GearInventory[]
-    order RentalOrder?
+    order RentalOrder[]
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 

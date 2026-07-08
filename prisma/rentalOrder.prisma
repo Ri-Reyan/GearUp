@@ -5,10 +5,10 @@ model RentalOrder {
     status OrderStatus @default(PENDING)
     location String @db.VarChar(100)
 
-    gearId String @unique @map("gear_id")
+    gearId String @map("gear_id")
     gear GearInventory @relation(fields: [gearId], references: [id], onDelete: Cascade)
 
-    userId String @unique @map("user_id")
+    userId String @map("user_id")
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     createdAt DateTime @default(now())
