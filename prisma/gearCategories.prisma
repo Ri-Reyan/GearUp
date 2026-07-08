@@ -1,0 +1,12 @@
+model GearCategories {
+    id String @id @default(uuid())
+    gearId String @unique @map("gear_id")
+    gear GearInventory @relation(fields: [gearId], references: [id], onDelete: Cascade)
+    categoryId String @unique @map("category_id")
+    categories Categories @relation(fields: [categoryId], references: [id],onDelete:Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("gear_categories")
+}

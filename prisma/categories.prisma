@@ -1,0 +1,10 @@
+model Categories {
+    id String @id @default(uuid())
+    tags String @db.VarChar(80)
+
+    gearCategories GearCategories?
+    createdAt DateTime @default(now())
+    upadtedAt DateTime @updatedAt
+
+    @@map("categories")
+}

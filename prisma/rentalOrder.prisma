@@ -13,6 +13,8 @@ model RentalOrder {
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+
+    @@map("rental_order")
 }
 
 enum OrderStatus {
