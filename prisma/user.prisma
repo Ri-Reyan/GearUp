@@ -1,0 +1,21 @@
+model User {
+    id String @id @default(uuid())
+    name String @db.VarChar(50)
+    email String @db.VarChar(100)
+    accountStatus AccounStatus @default(ACTIVE)
+    role UserRole @default(user)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+enum AccounStatus {
+    ACTIVE
+    BLOCKED
+}
+
+enum UserRole {
+    user
+    provider
+    admin
+}
