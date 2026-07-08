@@ -7,8 +7,9 @@ model GearInventory {
     brand String @db.VarChar(20)
     availability Availability @default(IN_STOCK)
 
-    ownerId String @map("owner_id")
+    ownerId String @unique @map("owner_id")
     owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+    order RentalOrder?
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

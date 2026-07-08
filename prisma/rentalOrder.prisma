@@ -1,0 +1,24 @@
+model RentalOrder {
+    id String @id @default(uuid())
+    quantity Int @db.Integer
+    total_price Int @db.Integer
+    status OrderStatus @default(PENDING)
+    location String @db.VarChar(100)
+
+    gearId String @unique @map("gear_id")
+    gear GearInventory @relation(fields: [gearId], references: [id], onDelete: Cascade)
+
+    userId String @unique @map("user_id")
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+enum OrderStatus {
+PENDING
+  CONFIRMED
+  PICKED_UP
+  RETURNED
+  CANCELLED
+}
