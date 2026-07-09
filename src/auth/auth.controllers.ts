@@ -57,6 +57,54 @@ const registerUser = expressAsyncHandler(
   },
 );
 
+const loginUser = expressAsyncHandler(async (req: Request, res: Response) => {
+  const payload: IUserLoginType = req.body;
+
+  const user = await authService.loginUserIntoDb(payload);
+
+  const accessToken = token.generateToken(
+    {
+      id: user.id,
+      email: user.email,
+      role: user.email,
+    },
+    process.env.JWT_ACCESS_SECRET as string,
+    process.env.JWT_ACCESS_TIME as string,
+  );
+
+  const refreshToken = token.generateToken(
+    {
+      id: user.id,
+      email: user.email,
+      role: user.email,
+    },
+    process.env.JWT_REFRESH_SECRET as string,
+    process.env.JWT_REFRESH_TIME as string,
+  );
+
+  res.cookie("accessToken", accessToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    maxAge: 1000 * 60 * 60 * 24,
+  });
+
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+  });
+
+  sendResponse(res, {
+    success: true,
+    statusCode: HttpStatus.CREATED,
+    message: "User login successfull",
+    data: user,
+  });
+});
+
 export const authControllers = {
   registerUser,
+  loginUser,
 };

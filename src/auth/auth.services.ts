@@ -38,6 +38,40 @@ const registerUserIntoDb = async (payload: IUserRegisterPayload) => {
   return newUser;
 };
 
+const loginUserIntoDb = async (payload: IUserLoginType) => {
+  const { email, password } = payload;
+
+  const user = await prisma.user.findUniqueOrThrow({
+    where: {
+      email,
+    },
+  });
+
+  const isMatched = await bcrypt.compare(
+    password as string,
+    user.password as string,
+  );
+
+  if (!isMatched) {
+    throw new Error("Invalid credentials");
+  }
+
+  const { id, name, role, accountStatus, createdAt, updatedAt } = user;
+
+  const result: ILoginReturnType = {
+    id,
+    name,
+    email,
+    role,
+    accountStatus,
+    createdAt,
+    updatedAt,
+  };
+
+  return result;
+};
+
 export const authService = {
   registerUserIntoDb,
+  loginUserIntoDb,
 };
