@@ -1,4 +1,5 @@
 import jwt, { JwtPayload, Secret, SignOptions } from "jsonwebtoken";
+import { IJwtPayload } from "../auth/auth.interface.js";
 
 const generateToken = (
   payload: string | JwtPayload | object,
@@ -10,8 +11,10 @@ const generateToken = (
   });
 };
 
-const verifyToken = (token: string, secret: Secret): JwtPayload | string => {
-  return jwt.verify(token, secret);
+const verifyToken = (token: string, secret: Secret) => {
+  const decode = jwt.verify(token, secret) as IJwtPayload;
+
+  return decode;
 };
 
 export const token = {

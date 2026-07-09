@@ -1,14 +1,16 @@
+import type { JwtPayload } from "jsonwebtoken";
+
 export type IUserRegisterPayload = {
-  name: String;
-  email: String;
-  password: String;
-  accountStatus?: String;
-  role?: [];
+  name: string;
+  email: string;
+  password: string;
+  accountStatus?: string;
+  role?: string;
 };
 
 export type IUserLoginType = {
-  email: String;
-  password: String;
+  email: string;
+  password: string;
 };
 
 export type ILoginReturnType = {
@@ -17,6 +19,12 @@ export type ILoginReturnType = {
   email: string;
   accountStatus: string;
   role: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: any;
+  updatedAt: any;
 };
+
+export interface IJwtPayload extends JwtPayload {
+  id: string;
+  email: string;
+  role: string;
+}

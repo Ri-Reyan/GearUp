@@ -4,9 +4,7 @@ import { authService } from "./auth.services.js";
 import { token } from "../utils/token.js";
 import sendResponse from "../utils/responce.js";
 import HttpStatus from "http-status";
-import { SignOptions } from "jsonwebtoken";
 import expressAsyncHandler from "express-async-handler";
-import { prisma } from "../lib/prisma.js";
 
 const registerUser = expressAsyncHandler(
   async (req: Request, res: Response) => {
@@ -36,15 +34,15 @@ const registerUser = expressAsyncHandler(
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: true,
+      secure: false,
       sameSite: "none",
       maxAge: 1000 * 60 * 60 * 24,
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: false,
+      sameSite: "lax",
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 
@@ -66,7 +64,7 @@ const loginUser = expressAsyncHandler(async (req: Request, res: Response) => {
     {
       id: user.id,
       email: user.email,
-      role: user.email,
+      role: user.role,
     },
     process.env.JWT_ACCESS_SECRET as string,
     process.env.JWT_ACCESS_TIME as string,
@@ -76,7 +74,7 @@ const loginUser = expressAsyncHandler(async (req: Request, res: Response) => {
     {
       id: user.id,
       email: user.email,
-      role: user.email,
+      role: user.role,
     },
     process.env.JWT_REFRESH_SECRET as string,
     process.env.JWT_REFRESH_TIME as string,
@@ -84,15 +82,15 @@ const loginUser = expressAsyncHandler(async (req: Request, res: Response) => {
 
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
+    secure: false,
+    sameSite: "lax",
     maxAge: 1000 * 60 * 60 * 24,
   });
 
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
+    secure: false,
+    sameSite: "lax",
     maxAge: 1000 * 60 * 60 * 24 * 7,
   });
 
@@ -104,7 +102,21 @@ const loginUser = expressAsyncHandler(async (req: Request, res: Response) => {
   });
 });
 
+const getMe = expressAsyncHandler(
+  async (req: Request & { user?: any }, res: Response) => {
+    const result = await authService.getMeFromDb(req.user.id);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: HttpStatus.OK,
+      message: "User profile retrieved successfully",
+      data: result,
+    });
+  },
+);
+
 export const authControllers = {
   registerUser,
   loginUser,
+  getMe,
 };

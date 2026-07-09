@@ -71,7 +71,15 @@ const loginUserIntoDb = async (payload: IUserLoginType) => {
   return result;
 };
 
+const getMeFromDb = async (userId: string) => {
+  return await prisma.user.findUniqueOrThrow({
+    where: { id: userId },
+    omit: { password: true },
+  });
+};
+
 export const authService = {
   registerUserIntoDb,
   loginUserIntoDb,
+  getMeFromDb,
 };
