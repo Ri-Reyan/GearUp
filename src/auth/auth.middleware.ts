@@ -17,7 +17,6 @@ const verifyUser = expressAsyncHandler(
 
       decoded = token.verifyToken(accessToken, process.env.JWT_ACCESS_SECRET!);
     } catch (error) {
-      // Access token missing or expired
       if (!refreshToken) {
         throw new Error("Unauthorized");
       }
@@ -75,9 +74,6 @@ const verifyUser = expressAsyncHandler(
 const verifyRole = (...roles: string[]) =>
   expressAsyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
-      console.log(roles);
-      console.log("REQ:", req.user?.role);
-
       if (!roles.includes(req.user?.role as string)) {
         throw new Error("You are not allowed");
       }
