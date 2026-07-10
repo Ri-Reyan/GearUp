@@ -1,4 +1,5 @@
 import { prisma } from "../lib/prisma.js";
+import { UserRole } from "@prisma/client";
 import {
   ILoginReturnType,
   IUserLoginType,
@@ -7,7 +8,7 @@ import {
 import bcrypt from "bcrypt";
 
 const registerUserIntoDb = async (payload: IUserRegisterPayload) => {
-  const { name, email, password }: IUserRegisterPayload = payload;
+  const { name, email, password, role }: IUserRegisterPayload = payload;
 
   const existingUser = await prisma.user.findUnique({
     where: {
@@ -29,6 +30,7 @@ const registerUserIntoDb = async (payload: IUserRegisterPayload) => {
       name,
       email,
       password: hashedPassword,
+      role: role as UserRole,
     },
     omit: {
       password: true,

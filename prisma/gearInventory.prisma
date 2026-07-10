@@ -2,7 +2,6 @@ model GearInventory {
     id String @id @default(uuid())
     name String @db.VarChar(50)
     description String @db.VarChar(255)
-    img String @db.VarChar(100)
     price Decimal @db.Decimal(8,2)
     brand String @db.VarChar(20)
     availability Availability @default(IN_STOCK)
