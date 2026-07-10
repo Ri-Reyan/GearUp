@@ -25,7 +25,7 @@ const addGear = expressAsyncHandler(async (req: Request, res: Response) => {
 });
 
 const updateGear = expressAsyncHandler(async (req: Request, res: Response) => {
-  const gearId = req.params;
+  const gearId = req.params.id;
 
   if (typeof gearId !== "string") {
     throw new Error("Gear id must be string");
@@ -45,7 +45,7 @@ const updateGear = expressAsyncHandler(async (req: Request, res: Response) => {
   });
 });
 
-export const gearControllers = {
+export const providerControllers = {
   addGear,
   updateGear,
 };
