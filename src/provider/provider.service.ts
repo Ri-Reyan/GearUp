@@ -58,7 +58,66 @@ const addGearIntoDb = async (ownerId: string, payload: IAddGearType) => {
   return newGear;
 };
 
+const updateGearIntoDb = async (
+  ownerId: string,
+  gearId: string,
+  payload: Partial<IUpdateType>,
+) => {
+  const gear = await prisma.gearInventory.findUniqueOrThrow({
+    where: { id: gearId },
+  });
+
+  if (gear.ownerId !== ownerId) {
+    throw new Error("You are not allowed to update this gear");
+  }
+
+  const { tag, ...restOfPayload } = payload;
+  let categoryId: string | undefined;
+
+  if (tag) {
+    const formattedTag = tag.toLowerCase().trim();
+
+    let category = await prisma.categories.findUnique({
+      where: { tags: formattedTag },
+    });
+
+    if (category) {
+      categoryId = category.id;
+    } else {
+      category = await prisma.categories.create({
+        data: { tags: formattedTag },
+      });
+      categoryId = category.id;
+    }
+  }
+
+  const updatedGear = await prisma.gearInventory.update({
+    where: { id: gearId },
+    data: {
+      ...restOfPayload,
+      categories:
+        tag && categoryId
+          ? {
+              deleteMany: {},
+              create: {
+                categoryId: categoryId,
+              },
+            }
+          : undefined,
+    },
+    include: {
+      categories: {
+        include: {
+          categories: true,
+        },
+      },
+    },
+  });
+
+  return updatedGear;
+};
+
 export const providerService = {
   addGearIntoDb,
-  // updateGearIntoDb,
+  updateGearIntoDb,
 };
