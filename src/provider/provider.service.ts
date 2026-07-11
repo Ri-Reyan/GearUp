@@ -1,5 +1,5 @@
 import { prisma } from "../lib/prisma.js";
-import type { OrderStatus } from "@prisma/client";
+import { OrderStatus } from "@prisma/client";
 import { IAddGearType, IUpdateType } from "./provider.interace.js";
 
 const addCategoryIntoDb = async (tag: string) => {
@@ -134,24 +134,26 @@ const getOrdersFromDb = async (ownerId: string) => {
   return orders;
 };
 
-const updateOrderStatusIntoDb = async (
-  ownerId: string,
-  orderId: string,
-  status: OrderStatus,
-) => {
-  const order = await prisma.rentalOrder.update({
+const updateOrderStatusIntoDb = async (ownerId: string, orderId: string) => {
+  const order = await prisma.rentalOrder.findUniqueOrThrow({
     where: {
       id: orderId,
       gear: {
         ownerId,
       },
     },
+  });
+
+  const updatedOrder = await prisma.rentalOrder.update({
+    where: {
+      id: orderId,
+    },
     data: {
-      status,
+      status: OrderStatus.CONFIRMED,
     },
   });
 
-  return order;
+  return updatedOrder;
 };
 
 export const providerService = {

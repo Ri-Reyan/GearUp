@@ -3,6 +3,7 @@ import expressAsyncHandler from "express-async-handler";
 import type { Request, Response } from "express";
 import { prisma } from "../lib/prisma.js";
 import sendResponse from "../utils/responce.js";
+import { AccountStatus } from "@prisma/client";
 
 const getAllUser = expressAsyncHandler(async (req: Request, res: Response) => {
   const users = await prisma.user.findMany();
@@ -17,11 +18,24 @@ const getAllUser = expressAsyncHandler(async (req: Request, res: Response) => {
 
 const updateUserStatus = expressAsyncHandler(
   async (req: Request, res: Response) => {
-    const { status } = req.body;
     const userId = req.params.id as string;
 
     if (!userId) {
       throw new Error("User id is missing");
+    }
+
+    const user = await prisma.user.findUniqueOrThrow({
+      where: {
+        id: userId,
+      },
+    });
+
+    let status;
+
+    if (user.accountStatus === AccountStatus.ACTIVE) {
+      status = AccountStatus.BLOCKED;
+    } else {
+      status = AccountStatus.ACTIVE;
     }
 
     const updatedUser = await prisma.user.update({
@@ -70,7 +84,7 @@ const getAllOrders = expressAsyncHandler(
     sendResponse(res, {
       success: true,
       statusCode: HttpStatus.OK,
-      message: "ALl orders retyrived successfully",
+      message: "ALl orders retrived successfully",
       data: orders,
     });
   },

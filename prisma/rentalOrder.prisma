@@ -18,7 +18,7 @@ model RentalOrder {
 }
 
 enum OrderStatus {
-PENDING
+  PENDING
   CONFIRMED
   PICKED_UP
   RETURNED

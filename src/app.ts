@@ -6,6 +6,7 @@ import providerRoute from "./provider/provider.route.js";
 import publicRouter from "./public/public.route.js";
 import userRouter from "./user/user.route.js";
 import adminRouter from "./admin/admin.route.js";
+import { prisma } from "./lib/prisma.js";
 
 const app = express();
 
@@ -17,7 +18,11 @@ app.use("/api/auth", authRoute);
 app.use("/api/provider", providerRoute);
 app.use("/api", publicRouter);
 app.use("/api", userRouter);
-app.use("//api/admin", adminRouter);
+app.use("/api/admin", adminRouter);
+
+// app.get("/", async () => {
+//   await prisma.rentalOrder.deleteMany();
+// });
 
 app.use(globalErrorHandler);
 

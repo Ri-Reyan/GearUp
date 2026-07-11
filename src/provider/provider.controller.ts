@@ -103,7 +103,6 @@ const updateOrderStatus = expressAsyncHandler(
     const order = await providerService.updateOrderStatusIntoDb(
       ownerId as string,
       orderId as string,
-      status as OrderStatus,
     );
 
     sendResponse(res, {
