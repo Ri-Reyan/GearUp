@@ -4,10 +4,11 @@ model User {
     email String @unique @db.VarChar(100)
     password String @db.VarChar(100)
     accountStatus AccountStatus @default(ACTIVE)
-    role UserRole @default(user)
+    role UserRole @default(customer)
 
     inventory GearInventory[]
     order RentalOrder[]
+    reviews Reviews[]
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
@@ -20,7 +21,7 @@ enum AccountStatus {
 }
 
 enum UserRole {
-    user
+    customer
     provider
     admin
 }

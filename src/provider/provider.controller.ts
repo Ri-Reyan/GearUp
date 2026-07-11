@@ -1,3 +1,4 @@
+import { join } from "./../../generated/prisma/internal/prismaNamespace";
 import HttpStatus from "http-status";
 import type { Request, Response } from "express";
 import expressAsyncHandler from "express-async-handler";
@@ -5,7 +6,7 @@ import { IAddGearType } from "./provider.interace.js";
 import sendResponse from "../utils/response.js";
 import { providerService } from "./provider.service.js";
 import { prisma } from "../lib/prisma.js";
-import { AccountStatus, OrderStatus } from "@prisma/client";
+import { OrderStatus } from "@prisma/client";
 
 const addGear = expressAsyncHandler(async (req: Request, res: Response) => {
   const payload: IAddGearType = req.body;
@@ -56,7 +57,7 @@ const deleteGear = expressAsyncHandler(async (req: Request, res: Response) => {
     },
   });
 
-  if (req.user?.role !== "admin" && gear.ownerId !== req.user?.id) {
+  if (gear.ownerId !== req.user?.id) {
     throw new Error("You are not allowed to delete this gear");
   }
 
@@ -87,7 +88,7 @@ const getOrder = expressAsyncHandler(async (req: Request, res: Response) => {
   sendResponse(res, {
     success: true,
     statusCode: HttpStatus.OK,
-    message: "All order retrived successfully",
+    message: "All order retrieved successfully",
     data: orders,
   });
 });
@@ -98,7 +99,11 @@ const updateOrderStatus = expressAsyncHandler(
 
     const ownerId = req.user?.id;
 
-    let status = req.body;
+    let { status } = req.body;
+
+    if (typeof status !== "string") {
+      throw new Error("Status must be string");
+    }
 
     if (status.toUpperCase().trim() === OrderStatus.PENDING) {
       status = OrderStatus.PENDING;
@@ -121,7 +126,7 @@ const updateOrderStatus = expressAsyncHandler(
     sendResponse(res, {
       success: true,
       statusCode: HttpStatus.OK,
-      message: "Order statsu updated successfully",
+      message: "Order status updated successfully",
       data: order,
     });
   },

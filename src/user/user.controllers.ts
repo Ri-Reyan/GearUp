@@ -79,7 +79,7 @@ const placeOrder = expressAsyncHandler(async (req: Request, res: Response) => {
     },
   });
 
-  const price = quantity * Number(gear.price);
+  const price = Math.ceil(quantity * Number(gear.price));
 
   const newOrder = await prisma.rentalOrder.create({
     data: {

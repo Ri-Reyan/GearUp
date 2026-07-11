@@ -8,21 +8,21 @@ const userRouter = express.Router();
 userRouter.get(
   "/rentals",
   authMidleware.verifyUser,
-  authMidleware.verifyRole(UserRole.user),
+  authMidleware.verifyRole(UserRole.customer),
   userController.getUsersOrder,
 );
 
 userRouter.get(
   "/rentals/:id",
   authMidleware.verifyUser,
-  authMidleware.verifyRole(UserRole.user),
+  authMidleware.verifyRole(UserRole.customer),
   userController.getRentalOrderById,
 );
 
 userRouter.post(
   "/rentals",
   authMidleware.verifyUser,
-  authMidleware.verifyRole(UserRole.user),
+  authMidleware.verifyRole(UserRole.customer),
   userController.placeOrder,
 );
 

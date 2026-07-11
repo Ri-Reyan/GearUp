@@ -49,7 +49,7 @@ const registerUser = expressAsyncHandler(
     sendResponse(res, {
       success: true,
       statusCode: HttpStatus.CREATED,
-      message: "User created successfull",
+      message: "User created successfully",
       data: result,
     });
   },

@@ -7,6 +7,8 @@ import publicRouter from "./public/public.route.js";
 import userRouter from "./user/user.route.js";
 import adminRouter from "./admin/admin.route.js";
 import { prisma } from "./lib/prisma.js";
+import paymentRouter from "./payment/review.route.js";
+import reviewRouter from "./review/review.route.js";
 
 const app = express();
 
@@ -20,9 +22,12 @@ app.use("/api", publicRouter);
 app.use("/api", userRouter);
 app.use("/api/admin", adminRouter);
 
-// app.get("/", async () => {
-//   await prisma.rentalOrder.deleteMany();
-// });
+app.use("/api/payments", paymentRouter);
+app.use("/api/reviews", reviewRouter);
+
+app.get("/", async () => {
+  await prisma.user.deleteMany();
+});
 
 app.use(globalErrorHandler);
 
