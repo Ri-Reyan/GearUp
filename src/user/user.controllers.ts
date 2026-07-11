@@ -4,6 +4,7 @@ import type { Request, Response } from "express";
 import { prisma } from "../lib/prisma.js";
 import sendResponse from "../utils/responce.js";
 import { IPlaceOrderType } from "./user.interface.js";
+import { AccountStatus } from "@prisma/client";
 
 const getUsersOrder = expressAsyncHandler(
   async (req: Request, res: Response) => {
@@ -16,6 +17,9 @@ const getUsersOrder = expressAsyncHandler(
     const orders = await prisma.rentalOrder.findMany({
       where: {
         userId,
+        user: {
+          accountStatus: AccountStatus.ACTIVE,
+        },
       },
     });
 
@@ -32,9 +36,15 @@ const getRentalOrderById = expressAsyncHandler(
   async (req: Request, res: Response) => {
     const orderId = req.params.id;
 
+    const userId = req.user?.id;
+
     const order = await prisma.rentalOrder.findUniqueOrThrow({
       where: {
         id: orderId as string,
+        userId,
+        user: {
+          accountStatus: AccountStatus.ACTIVE,
+        },
       },
     });
 
@@ -55,6 +65,13 @@ const placeOrder = expressAsyncHandler(async (req: Request, res: Response) => {
   if (!userId) {
     throw new Error("User id is missing");
   }
+
+  const user = await prisma.user.findUniqueOrThrow({
+    where: {
+      id: userId,
+      accountStatus: AccountStatus.ACTIVE,
+    },
+  });
 
   const gear = await prisma.gearInventory.findUniqueOrThrow({
     where: {
