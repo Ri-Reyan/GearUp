@@ -1,4 +1,3 @@
-import { join } from "./../../generated/prisma/internal/prismaNamespace";
 import HttpStatus from "http-status";
 import type { Request, Response } from "express";
 import expressAsyncHandler from "express-async-handler";

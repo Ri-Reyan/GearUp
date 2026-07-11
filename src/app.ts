@@ -25,8 +25,11 @@ app.use("/api/admin", adminRouter);
 app.use("/api/payments", paymentRouter);
 app.use("/api/reviews", reviewRouter);
 
-app.get("/", async () => {
-  await prisma.user.deleteMany();
+app.get("/", (_req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "GearUp API is running",
+  });
 });
 
 app.use(globalErrorHandler);

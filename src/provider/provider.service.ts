@@ -1,5 +1,5 @@
 import { prisma } from "../lib/prisma.js";
-import { OrderStatus } from "@prisma/client";
+import { Availability, OrderStatus } from "@prisma/client";
 import { IAddGearType, IUpdateType } from "./provider.interace.js";
 
 const addCategoryIntoDb = async (tag: string) => {
@@ -72,7 +72,7 @@ const updateGearIntoDb = async (
     throw new Error("You are not allowed to update this gear");
   }
 
-  const { tag, ...restOfPayload } = payload;
+  const { tag, availability, ...restOfPayload } = payload;
   let categoryId: string | undefined;
 
   if (tag) {
@@ -96,6 +96,7 @@ const updateGearIntoDb = async (
     where: { id: gearId },
     data: {
       ...restOfPayload,
+      ...(availability ? { availability: availability as Availability } : {}),
       categories:
         tag && categoryId
           ? {
