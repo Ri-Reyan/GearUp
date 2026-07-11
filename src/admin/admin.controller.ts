@@ -3,8 +3,6 @@ import expressAsyncHandler from "express-async-handler";
 import type { Request, Response } from "express";
 import { prisma } from "../lib/prisma.js";
 import sendResponse from "../utils/responce.js";
-import { resolveSoa } from "node:dns";
-import { error } from "node:console";
 
 const getAllUser = expressAsyncHandler(async (req: Request, res: Response) => {
   const users = await prisma.user.findMany();
@@ -77,3 +75,10 @@ const getAllOrders = expressAsyncHandler(
     });
   },
 );
+
+export const adminController = {
+  getAllUser,
+  updateUserStatus,
+  getAllGearList,
+  getAllOrders,
+};
