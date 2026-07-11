@@ -2,10 +2,10 @@ import HttpStatus from "http-status";
 import type { Request, Response } from "express";
 import expressAsyncHandler from "express-async-handler";
 import { IAddGearType } from "./provider.interace.js";
-import sendResponse from "../utils/responce.js";
+import sendResponse from "../utils/response.js";
 import { providerService } from "./provider.service.js";
 import { prisma } from "../lib/prisma.js";
-import { OrderStatus } from "@prisma/client";
+import { AccountStatus, OrderStatus } from "@prisma/client";
 
 const addGear = expressAsyncHandler(async (req: Request, res: Response) => {
   const payload: IAddGearType = req.body;
@@ -98,11 +98,24 @@ const updateOrderStatus = expressAsyncHandler(
 
     const ownerId = req.user?.id;
 
-    const status: string = req.body;
+    let status = req.body;
+
+    if (status.toUpperCase().trim() === OrderStatus.PENDING) {
+      status = OrderStatus.PENDING;
+    } else if (status.toUpperCase().trim() === OrderStatus.CANCELLED) {
+      status = OrderStatus.CANCELLED;
+    } else if (status.toUpperCase().trim() === OrderStatus.CONFIRMED) {
+      status = OrderStatus.CONFIRMED;
+    } else if (status.toUpperCase().trim() === OrderStatus.PICKED_UP) {
+      status = OrderStatus.PICKED_UP;
+    } else {
+      status = OrderStatus.RETURNED;
+    }
 
     const order = await providerService.updateOrderStatusIntoDb(
       ownerId as string,
       orderId as string,
+      status,
     );
 
     sendResponse(res, {

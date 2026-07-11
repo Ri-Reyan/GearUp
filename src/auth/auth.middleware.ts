@@ -81,7 +81,7 @@ const verifyRole = (...roles: string[]) =>
     },
   );
 
-export const authMidlleware = {
+export const authMidleware = {
   verifyUser,
   verifyRole,
 };

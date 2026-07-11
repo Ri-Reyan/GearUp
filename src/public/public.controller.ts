@@ -2,7 +2,7 @@ import HttpStatus from "http-status";
 import expressAsyncHandler from "express-async-handler";
 import type { Request, Response } from "express";
 import { prisma } from "../lib/prisma.js";
-import sendResponse from "../utils/responce.js";
+import sendResponse from "../utils/response.js";
 
 const getGears = expressAsyncHandler(async (req: Request, res: Response) => {
   const gears = await prisma.gearInventory.findMany();

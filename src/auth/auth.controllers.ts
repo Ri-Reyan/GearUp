@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { IUserLoginType, IUserRegisterPayload } from "./auth.interface.js";
 import { authService } from "./auth.services.js";
 import { token } from "../utils/token.js";
-import sendResponse from "../utils/responce.js";
+import sendResponse from "../utils/response.js";
 import HttpStatus from "http-status";
 import expressAsyncHandler from "express-async-handler";
 
@@ -16,7 +16,7 @@ const registerUser = expressAsyncHandler(
       {
         id: result.id,
         email: result.email,
-        role: result.email,
+        role: result.role,
       },
       process.env.JWT_ACCESS_SECRET as string,
       process.env.JWT_ACCESS_TIME as string,
@@ -26,7 +26,7 @@ const registerUser = expressAsyncHandler(
       {
         id: result.id,
         email: result.email,
-        role: result.email,
+        role: result.role,
       },
       process.env.JWT_REFRESH_SECRET as string,
       process.env.JWT_REFRESH_TIME as string,

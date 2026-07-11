@@ -134,7 +134,11 @@ const getOrdersFromDb = async (ownerId: string) => {
   return orders;
 };
 
-const updateOrderStatusIntoDb = async (ownerId: string, orderId: string) => {
+const updateOrderStatusIntoDb = async (
+  ownerId: string,
+  orderId: string,
+  status: string,
+) => {
   const order = await prisma.rentalOrder.findUniqueOrThrow({
     where: {
       id: orderId,
@@ -149,7 +153,7 @@ const updateOrderStatusIntoDb = async (ownerId: string, orderId: string) => {
       id: orderId,
     },
     data: {
-      status: OrderStatus.CONFIRMED,
+      status: status as OrderStatus,
     },
   });
 
