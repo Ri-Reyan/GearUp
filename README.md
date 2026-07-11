@@ -309,7 +309,7 @@ The database already includes these users for quick testing:
   - email: `reyan@example.com`
   - password: `reyan123`
 
-Live Linl: https://gearup-x54j.onrender.com
+Live Link: https://gearup-x54j.onrender.com
 
 ## License
 
