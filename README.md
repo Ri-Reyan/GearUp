@@ -287,6 +287,28 @@ npx prisma migrate dev
 npx prisma studio
 ```
 
+## Postman Collection
+
+A ready-to-import Postman collection is available at [postman/gearup-api.postman_collection.json](postman/gearup-api.postman_collection.json).
+
+Import it into Postman, then set the `baseUrl` variable to your local or deployed server URL. The current Render deployment base URL is `https://gearup-x54j.onrender.com/`.
+
+## Demo Credentials
+
+The database already includes these users for quick testing:
+
+- Customer
+  - email: `rifat@example.com`
+  - password: `rifat123`
+
+- Provider
+  - email: `islam@example.com`
+  - password: `islam123`
+
+- Admin
+  - email: `reyan@example.com`
+  - password: `reyan123`
+
 ## License
 
 This project is currently unlicensed and intended for educational or internal use.

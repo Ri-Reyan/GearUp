@@ -3,7 +3,7 @@ import { PaymentStatus } from "@prisma/client";
 import { prisma } from "../lib/prisma.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: "2025-01-27" as any,
+  apiVersion: "2026-04-22.dahlia" as any,
 });
 
 const createPaymentIntentInDb = async (rentalOrderId: string) => {

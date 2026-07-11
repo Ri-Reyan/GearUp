@@ -84,7 +84,7 @@ const getAllOrders = expressAsyncHandler(
     sendResponse(res, {
       success: true,
       statusCode: HttpStatus.OK,
-      message: "ALl orders retrived successfully",
+      message: "All orders retrived successfully",
       data: orders,
     });
   },
