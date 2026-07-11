@@ -289,7 +289,7 @@ npx prisma studio
 
 ## Postman Collection
 
-A ready-to-import Postman collection is available at [postman/gearup-api.postman_collection.json]([postman/gearup-api.postman_collection.json](https://rifatging-2264859.postman.co/workspace/Rifat-Ging's-Workspace~b5bab31e-27e6-4db3-8592-27a24ae3a46e/folder/49011259-67c782cb-aa27-46fe-b7cb-bdff0d42b0d0?sideView=agentMode)).
+A ready-to-import Postman collection is available at postman/gearup-api.postman_collection.json](https://rifatging-2264859.postman.co/workspace/Rifat-Ging's-Workspace~b5bab31e-27e6-4db3-8592-27a24ae3a46e/folder/49011259-67c782cb-aa27-46fe-b7cb-bdff0d42b0d0?sideView=agentMode
 
 Import it into Postman, then set the `baseUrl` variable to your local or deployed server URL. The current Render deployment base URL is `https://gearup-x54j.onrender.com/`.
 
