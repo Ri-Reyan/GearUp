@@ -13,7 +13,6 @@ const createPaymentIntentInDb = async (rentalOrderId: string) => {
 
   const amountInCents = Math.round(Number(order.total_price) * 100);
 
-  // স্ট্রাইপ ইনটেন্ট তৈরি
   const paymentIntent = await stripe.paymentIntents.create({
     amount: amountInCents,
     currency: "usd",
@@ -21,7 +20,6 @@ const createPaymentIntentInDb = async (rentalOrderId: string) => {
     metadata: { rentalOrderId: order.id },
   });
 
-  // ডাটাবেসে পেন্ডিং পেমেন্ট রেকর্ড
   const paymentRecord = await prisma.payments.create({
     data: {
       rentalOrderId: order.id,
@@ -39,7 +37,6 @@ const createPaymentIntentInDb = async (rentalOrderId: string) => {
 };
 
 const confirmPaymentInDb = async (transactionId: string) => {
-  // পোস্টম্যান ফ্রেন্ডলি টেস্টিংয়ের জন্য আমরা সরাসরি ডাটাবেস ট্রানজেকশনে স্ট্যাটাস আপডেট করছি
   return await prisma.$transaction(async (tx) => {
     const updatedPayment = await tx.payments.update({
       where: { transactionId },
