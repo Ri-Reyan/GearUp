@@ -4,6 +4,7 @@ model GearInventory {
     description String @db.VarChar(255)
     price Decimal @db.Decimal(8,2)
     brand String @db.VarChar(20)
+    pictureLink String?
     availability Availability @default(IN_STOCK)
 
     ownerId String @map("owner_id")

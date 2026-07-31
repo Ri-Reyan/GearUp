@@ -30,7 +30,7 @@ const addGearIntoDb = async (ownerId: string, payload: IAddGearType) => {
     }
   }
 
-  const { name, description, price, brand } = payload;
+  const { name, description, price, brand, pictureLink } = payload;
 
   const newGear = await prisma.gearInventory.create({
     data: {
@@ -39,6 +39,7 @@ const addGearIntoDb = async (ownerId: string, payload: IAddGearType) => {
       price,
       brand,
       ownerId,
+      pictureLink,
       categories: categoryId
         ? {
             create: {
