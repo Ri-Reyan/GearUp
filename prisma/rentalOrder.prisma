@@ -4,6 +4,7 @@ model RentalOrder {
     total_price Int @db.Integer
     status OrderStatus @default(PENDING)
     location String @db.VarChar(100)
+    returnDate DateTime
 
     gearId String @map("gear_id")
     gear GearInventory @relation(fields: [gearId], references: [id], onDelete: Cascade)

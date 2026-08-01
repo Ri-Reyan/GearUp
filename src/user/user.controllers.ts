@@ -58,7 +58,7 @@ const getRentalOrderById = expressAsyncHandler(
 );
 
 const placeOrder = expressAsyncHandler(async (req: Request, res: Response) => {
-  const { gearId, location, quantity }: IPlaceOrderType = req.body;
+  const { gearId, location, quantity, returnDate }: IPlaceOrderType = req.body;
 
   const userId = req.user?.id;
 
@@ -86,6 +86,7 @@ const placeOrder = expressAsyncHandler(async (req: Request, res: Response) => {
       quantity,
       total_price: price,
       location,
+      returnDate,
       gearId,
       userId,
     },
