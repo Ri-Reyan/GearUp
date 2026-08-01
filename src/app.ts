@@ -6,12 +6,18 @@ import providerRoute from "./provider/provider.route.js";
 import publicRouter from "./public/public.route.js";
 import userRouter from "./user/user.route.js";
 import adminRouter from "./admin/admin.route.js";
-import { prisma } from "./lib/prisma.js";
 import paymentRouter from "./payment/review.route.js";
 import reviewRouter from "./review/review.route.js";
+import cors from "cors";
 
 const app = express();
 
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
