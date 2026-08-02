@@ -4,7 +4,7 @@ import type { Request, Response } from "express";
 import { prisma } from "../lib/prisma.js";
 import sendResponse from "../utils/response.js";
 import { IPlaceOrderType } from "./user.interface.js";
-import { AccountStatus } from "@prisma/client";
+import { AccountStatus, Availability } from "@prisma/client";
 
 const getUsersOrder = expressAsyncHandler(
   async (req: Request, res: Response) => {
@@ -58,12 +58,26 @@ const getRentalOrderById = expressAsyncHandler(
 );
 
 const placeOrder = expressAsyncHandler(async (req: Request, res: Response) => {
-  const { gearId, location, quantity, returnDate }: IPlaceOrderType = req.body;
+  const {
+    gearId,
+    location,
+    quantity,
+    rentalDate,
+    returnDate,
+  }: IPlaceOrderType = req.body;
 
   const userId = req.user?.id;
 
   if (!userId) {
-    throw new Error("User id is missing");
+    throw new Error("Unauthorized");
+  }
+
+  if (!quantity || quantity < 1) {
+    throw new Error("Quantity must be at least 1");
+  }
+
+  if (!location?.trim()) {
+    throw new Error("Location is required");
   }
 
   const user = await prisma.user.findUniqueOrThrow({
@@ -75,27 +89,65 @@ const placeOrder = expressAsyncHandler(async (req: Request, res: Response) => {
 
   const gear = await prisma.gearInventory.findUniqueOrThrow({
     where: {
-      id: gearId as string,
+      id: gearId,
     },
   });
 
-  const price = Math.ceil(quantity * Number(gear.price));
+  if (gear.availability === Availability.OUT_OF_STOCK) {
+    throw new Error("This gear is currently unavailable");
+  }
+
+  const rentalDateObj = new Date(rentalDate);
+  const returnDateObj = new Date(returnDate);
+
+  rentalDateObj.setHours(0, 0, 0, 0);
+  returnDateObj.setHours(0, 0, 0, 0);
+
+  // Rental date cannot be before today
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  if (rentalDateObj < today) {
+    throw new Error("Rental date cannot be before today");
+  }
+
+  // Return date must be after rental date
+  if (returnDateObj <= rentalDateObj) {
+    throw new Error("Return date must be after rental date");
+  }
+
+  const rentalDays = Math.ceil(
+    (returnDateObj.getTime() - rentalDateObj.getTime()) / (1000 * 60 * 60 * 24),
+  );
+
+  const totalPrice = Math.ceil(Number(gear.price) * quantity * rentalDays);
 
   const newOrder = await prisma.rentalOrder.create({
     data: {
       quantity,
-      total_price: price,
+      total_price: totalPrice,
       location,
-      returnDate,
-      gearId,
-      userId,
+      rentalDate: rentalDateObj,
+      returnDate: returnDateObj,
+      gearId: gear.id,
+      userId: user.id,
+    },
+    include: {
+      gear: true,
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
     },
   });
 
   sendResponse(res, {
     success: true,
-    statusCode: HttpStatus.OK,
-    message: "New order placed successfully",
+    statusCode: HttpStatus.CREATED,
+    message: "Rental order placed successfully",
     data: newOrder,
   });
 });

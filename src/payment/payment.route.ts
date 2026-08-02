@@ -9,20 +9,29 @@ paymentRouter.post(
   authMidleware.verifyUser,
   paymentController.createPayment,
 );
+
 paymentRouter.post(
   "/confirm",
   authMidleware.verifyUser,
   paymentController.confirmPayment,
 );
+
 paymentRouter.get(
   "/",
   authMidleware.verifyUser,
   paymentController.getPaymentHistory,
 );
+
 paymentRouter.get(
   "/:id",
   authMidleware.verifyUser,
   paymentController.getPaymentDetails,
+);
+
+paymentRouter.get(
+  "/success/:paymentId",
+  authMidleware.verifyUser,
+  paymentController.getSinglePayment,
 );
 
 export default paymentRouter;

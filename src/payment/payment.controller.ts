@@ -7,6 +7,11 @@ import sendResponse from "../utils/response.js";
 const createPayment = expressAsyncHandler(
   async (req: Request, res: Response) => {
     const { rentalOrderId } = req.body;
+
+    if (!rentalOrderId) {
+      throw new Error("Rental order id is required");
+    }
+
     const result = await paymentService.createPaymentIntentInDb(rentalOrderId);
 
     sendResponse(res, {
@@ -62,9 +67,27 @@ const getPaymentDetails = expressAsyncHandler(
   },
 );
 
+const getSinglePayment = expressAsyncHandler(
+  async (req: Request, res: Response) => {
+    const { paymentId } = req.params;
+
+    const result = await paymentService.getSinglePaymentFromDb(
+      paymentId as string,
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: HttpStatus.OK,
+      message: "Payment retrieved successfully",
+      data: result,
+    });
+  },
+);
+
 export const paymentController = {
   createPayment,
   confirmPayment,
   getPaymentHistory,
   getPaymentDetails,
+  getSinglePayment,
 };

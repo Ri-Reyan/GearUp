@@ -8,8 +8,32 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 
 const createPaymentIntentInDb = async (rentalOrderId: string) => {
   const order = await prisma.rentalOrder.findUniqueOrThrow({
-    where: { id: rentalOrderId },
+    where: {
+      id: rentalOrderId,
+    },
+    include: {
+      gear: true,
+    },
   });
+
+  const existingPayment = await prisma.payments.findFirst({
+    where: {
+      rentalOrderId,
+      status: PaymentStatus.PENDING,
+    },
+  });
+
+  if (existingPayment) {
+    const paymentIntent = await stripe.paymentIntents.retrieve(
+      existingPayment.transactionId,
+    );
+
+    return {
+      clientSecret: paymentIntent.client_secret!,
+      paymentRecord: existingPayment,
+      rentalOrder: order,
+    };
+  }
 
   const amountInCents = Math.round(Number(order.total_price) * 100);
 
@@ -17,7 +41,9 @@ const createPaymentIntentInDb = async (rentalOrderId: string) => {
     amount: amountInCents,
     currency: "usd",
     payment_method_types: ["card"],
-    metadata: { rentalOrderId: order.id },
+    metadata: {
+      rentalOrderId: order.id,
+    },
   });
 
   const paymentRecord = await prisma.payments.create({
@@ -31,15 +57,18 @@ const createPaymentIntentInDb = async (rentalOrderId: string) => {
   });
 
   return {
+    clientSecret: paymentIntent.client_secret!,
     paymentRecord,
-    clientSecret: paymentIntent.client_secret,
+    rentalOrder: order,
   };
 };
 
 const confirmPaymentInDb = async (transactionId: string) => {
   return await prisma.$transaction(async (tx) => {
-    const updatedPayment = await tx.payments.update({
-      where: { transactionId },
+    const payment = await tx.payments.update({
+      where: {
+        transactionId,
+      },
       data: {
         status: PaymentStatus.COMPLETED,
         paidAt: new Date(),
@@ -47,13 +76,15 @@ const confirmPaymentInDb = async (transactionId: string) => {
     });
 
     await tx.rentalOrder.update({
-      where: { id: updatedPayment.rentalOrderId },
+      where: {
+        id: payment.rentalOrderId,
+      },
       data: {
         status: "CONFIRMED",
       },
     });
 
-    return updatedPayment;
+    return payment;
   });
 };
 
@@ -74,7 +105,26 @@ const getPaymentDetailsFromDb = async (id: string) => {
   return await prisma.payments.findUniqueOrThrow({
     where: { id },
     include: {
-      rentalOrder: true,
+      rentalOrder: {
+        include: {
+          gear: true,
+        },
+      },
+    },
+  });
+};
+
+const getSinglePaymentFromDb = async (paymentId: string) => {
+  return await prisma.payments.findUniqueOrThrow({
+    where: {
+      id: paymentId,
+    },
+    include: {
+      rentalOrder: {
+        include: {
+          gear: true,
+        },
+      },
     },
   });
 };
@@ -84,4 +134,5 @@ export const paymentService = {
   confirmPaymentInDb,
   getPaymentHistoryFromDb,
   getPaymentDetailsFromDb,
+  getSinglePaymentFromDb,
 };

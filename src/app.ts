@@ -6,7 +6,7 @@ import providerRoute from "./provider/provider.route.js";
 import publicRouter from "./public/public.route.js";
 import userRouter from "./user/user.route.js";
 import adminRouter from "./admin/admin.route.js";
-import paymentRouter from "./payment/review.route.js";
+import paymentRouter from "./payment/payment.route.js";
 import reviewRouter from "./review/review.route.js";
 import cors from "cors";
 
@@ -31,7 +31,7 @@ app.use("/api/admin", adminRouter);
 app.use("/api/payments", paymentRouter);
 app.use("/api/reviews", reviewRouter);
 
-app.get("/", (_req, res) => {
+app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
     message: "GearUp API is running",

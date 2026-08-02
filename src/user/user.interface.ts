@@ -3,4 +3,5 @@ export type IPlaceOrderType = {
   quantity: number;
   location: string;
   returnDate: Date;
+  rentalDate: Date;
 };

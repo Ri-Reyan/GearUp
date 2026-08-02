@@ -23,6 +23,14 @@ const getGearById = expressAsyncHandler(async (req: Request, res: Response) => {
     where: {
       id: gearId as string,
     },
+    include: {
+      categories: {
+        include: {
+          categories: true,
+        },
+      },
+      owner: true,
+    },
   });
 
   sendResponse(res, {
