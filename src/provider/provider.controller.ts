@@ -8,7 +8,15 @@ import { prisma } from "../lib/prisma.js";
 import { OrderStatus } from "@prisma/client";
 
 const getAllGear = expressAsyncHandler(async (req: Request, res: Response) => {
-  const gears = await prisma.gearInventory.findMany();
+  const gears = await prisma.gearInventory.findMany({
+    include: {
+      categories: {
+        include: {
+          categories: true,
+        },
+      },
+    },
+  });
 
   sendResponse(res, {
     success: true,
