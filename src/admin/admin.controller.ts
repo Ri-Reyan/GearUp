@@ -6,7 +6,9 @@ import sendResponse from "../utils/response.js";
 import { AccountStatus } from "@prisma/client";
 
 const getAllUser = expressAsyncHandler(async (req: Request, res: Response) => {
-  const users = await prisma.user.findMany();
+  const users = await prisma.user.findMany({
+    where: req.user?.id ? { id: { not: req.user.id } } : {},
+  });
 
   sendResponse(res, {
     success: true,
@@ -43,7 +45,7 @@ const updateUserStatus = expressAsyncHandler(
         id: userId,
       },
       data: {
-        status,
+        accountStatus: status,
       },
     });
 
@@ -58,11 +60,16 @@ const updateUserStatus = expressAsyncHandler(
 
 const getAllGearList = expressAsyncHandler(
   async (req: Request, res: Response) => {
-    const gears = await prisma.gearInventory.findMany();
-
-    if (!gears) {
-      throw new Error("Something went wrong");
-    }
+    const gears = await prisma.gearInventory.findMany({
+      include: {
+        owner: true,
+        categories: {
+          include: {
+            categories: true,
+          },
+        },
+      },
+    });
 
     sendResponse(res, {
       success: true,
@@ -76,10 +83,6 @@ const getAllGearList = expressAsyncHandler(
 const getAllOrders = expressAsyncHandler(
   async (req: Request, res: Response) => {
     const orders = await prisma.rentalOrder.findMany();
-
-    if (!orders) {
-      throw new Error("Something went wrong");
-    }
 
     sendResponse(res, {
       success: true,

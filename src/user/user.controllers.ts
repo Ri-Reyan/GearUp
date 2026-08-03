@@ -21,6 +21,13 @@ const getUsersOrder = expressAsyncHandler(
           accountStatus: AccountStatus.ACTIVE,
         },
       },
+      include: {
+        gear: {
+          include: {
+            order: true,
+          },
+        },
+      },
     });
 
     sendResponse(res, {
