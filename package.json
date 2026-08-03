@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "tsx watch ./src/server.ts",
     "build": "tsc --project tsconfig.json",
-    "start": "npm run build && npx prisma migrate deploy && node ./dist/src/server.js",
+    "start": "npm run build && node ./dist/src/server.js",
     "migrate": "npx prisma migrate",
     "postinstall": "prisma generate",
     "test": "echo \"Error: no test specified\" && exit 1"
