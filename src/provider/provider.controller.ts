@@ -7,6 +7,17 @@ import { providerService } from "./provider.service.js";
 import { prisma } from "../lib/prisma.js";
 import { OrderStatus } from "@prisma/client";
 
+const getAllGear = expressAsyncHandler(async (req: Request, res: Response) => {
+  const gears = await prisma.gearInventory.findMany();
+
+  sendResponse(res, {
+    success: true,
+    statusCode: HttpStatus.OK,
+    message: "All gears retrived successfully",
+    data: gears,
+  });
+});
+
 const addGear = expressAsyncHandler(async (req: Request, res: Response) => {
   const payload: IAddGearType = req.body;
   const ownerId = req.user?.id;
@@ -137,4 +148,5 @@ export const providerControllers = {
   deleteGear,
   getOrder,
   updateOrderStatus,
+  getAllGear,
 };

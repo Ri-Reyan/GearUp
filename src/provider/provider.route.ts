@@ -5,6 +5,13 @@ import { UserRole } from "@prisma/client";
 
 const providerRoute = express.Router();
 
+providerRoute.get(
+  "/gear",
+  authMidleware.verifyUser,
+  authMidleware.verifyRole(UserRole.provider),
+  providerControllers.getAllGear,
+);
+
 providerRoute.post(
   "/gear",
   authMidleware.verifyUser,
